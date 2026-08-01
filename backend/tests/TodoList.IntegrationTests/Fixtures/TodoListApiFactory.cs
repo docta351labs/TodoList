@@ -10,24 +10,39 @@ namespace TodoList.IntegrationTests.Fixtures;
 public class TodoListApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly PostgreSqlContainerFixture _dbFixture = new();
-    private readonly SqliteConnection _sqliteConnection;
+    private SqliteConnection? _sqliteConnection;
 
-    public TodoListApiFactory()
+    public async Task InitializeAsync()
     {
-        _sqliteConnection = new SqliteConnection("DataSource=:memory:");
-        _sqliteConnection.Open();
+        await _dbFixture.InitializeAsync();
+
+        if (!_dbFixture.IsContainerRunning)
+        {
+            _sqliteConnection = new SqliteConnection("DataSource=:memory:");
+            await _sqliteConnection.OpenAsync();
+
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseSqlite(_sqliteConnection)
+                .UseSnakeCaseNamingConvention()
+                .Options;
+
+            using var context = new AppDbContext(options);
+            await context.Database.EnsureCreatedAsync();
+        }
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureServices(services =>
         {
-            var descriptor = services.SingleOrDefault(
-                d => d.ServiceType == typeof(DbContextOptions<AppDbContext>));
+            var descriptors = services.Where(d =>
+                d.ServiceType == typeof(DbContextOptions<AppDbContext>) ||
+                d.ServiceType == typeof(DbContextOptions) ||
+                d.ServiceType.Name.Contains("DbContextOptions")).ToList();
 
-            if (descriptor != null)
+            foreach (var d in descriptors)
             {
-                services.Remove(descriptor);
+                services.Remove(d);
             }
 
             if (_dbFixture.IsContainerRunning)
@@ -42,27 +57,20 @@ public class TodoListApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
             {
                 services.AddDbContext<AppDbContext>(options =>
                 {
-                    options.UseSqlite(_sqliteConnection)
+                    options.UseSqlite(_sqliteConnection!)
                            .UseSnakeCaseNamingConvention();
                 });
-
-                var sp = services.BuildServiceProvider();
-                using var scope = sp.CreateScope();
-                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                dbContext.Database.EnsureCreated();
             }
         });
     }
 
-    public async Task InitializeAsync()
-    {
-        await _dbFixture.InitializeAsync();
-    }
-
     public new async Task DisposeAsync()
     {
-        _sqliteConnection.Close();
-        _sqliteConnection.Dispose();
+        if (_sqliteConnection != null)
+        {
+            await _sqliteConnection.CloseAsync();
+            await _sqliteConnection.DisposeAsync();
+        }
         await _dbFixture.DisposeAsync();
         await base.DisposeAsync();
     }

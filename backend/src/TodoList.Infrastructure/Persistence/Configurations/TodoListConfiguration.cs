@@ -12,6 +12,9 @@ public class TodoListConfiguration : IEntityTypeConfiguration<TodoListAggregate>
 
         builder.HasKey(l => l.Id);
 
+        builder.Property(l => l.Id)
+            .ValueGeneratedNever();
+
         builder.Property(l => l.Title)
             .HasMaxLength(100)
             .IsRequired();

@@ -25,6 +25,7 @@ public class ExceptionHandlingMiddleware
         }
         catch (Exception ex)
         {
+            try { File.AppendAllText("test_error.log", ex.ToString() + "\n\n-------------------\n\n"); } catch { }
             _logger.LogError(ex, "An unhandled exception occurred: {Message}", ex.Message);
             await HandleExceptionAsync(context, ex);
         }

@@ -26,7 +26,7 @@ public static class TodoListEndpoints
             var ownerId = GetOwnerId(user);
             var command = new CreateTodoListCommand(request.Title, ownerId);
             var result = await sender.Send(command, ct);
-            return Results.CreatedAtRoute("GetTodoListById", new { id = result.Id }, result);
+            return Results.Created($"/api/v1/todolists/{result.Id}", result);
         })
         .WithName("CreateTodoList")
         .WithSummary("Create a new todo list");

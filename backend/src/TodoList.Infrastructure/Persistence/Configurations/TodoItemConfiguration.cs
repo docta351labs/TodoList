@@ -12,24 +12,23 @@ public class TodoItemConfiguration : IEntityTypeConfiguration<TodoItem>
 
         builder.HasKey(i => i.Id);
 
+        builder.Property(i => i.Id)
+            .ValueGeneratedNever();
+
         builder.Property(i => i.Title)
             .HasMaxLength(200)
             .IsRequired();
 
         builder.Property(i => i.Description)
-            .HasColumnType("text")
             .IsRequired(false);
 
         builder.Property(i => i.Priority)
-            .HasColumnType("smallint")
             .IsRequired();
 
         builder.Property(i => i.Status)
-            .HasColumnType("smallint")
             .IsRequired();
 
         builder.Property(i => i.DueDate)
-            .HasColumnType("date")
             .IsRequired(false);
 
         builder.Property(i => i.CreatedAt)

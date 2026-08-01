@@ -37,7 +37,23 @@ public class TodoListRepository : ITodoListRepository
 
     public Task UpdateAsync(TodoListAggregate list, CancellationToken ct = default)
     {
-        _dbContext.TodoLists.Update(list);
+        var entry = _dbContext.Entry(list);
+        if (entry.State == EntityState.Detached)
+        {
+            _dbContext.TodoLists.Update(list);
+        }
+        else
+        {
+            foreach (var item in list.Items)
+            {
+                var itemEntry = _dbContext.Entry(item);
+                if (itemEntry.State == EntityState.Detached)
+                {
+                    _dbContext.TodoItems.Add(item);
+                    itemEntry.Property("TodoListId").CurrentValue = list.Id;
+                }
+            }
+        }
         return Task.CompletedTask;
     }
 

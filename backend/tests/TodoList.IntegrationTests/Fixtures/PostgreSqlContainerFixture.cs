@@ -13,6 +13,20 @@ public class PostgreSqlContainerFixture : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
+        if (OperatingSystem.IsWindows())
+        {
+            try
+            {
+                using var pipe = new System.IO.Pipes.NamedPipeClientStream(".", "docker_engine", System.IO.Pipes.PipeDirection.InOut);
+                pipe.Connect(500);
+            }
+            catch
+            {
+                _container = null;
+                return;
+            }
+        }
+
         try
         {
             _container = new PostgreSqlBuilder("postgres:16-alpine")
@@ -32,7 +46,6 @@ public class PostgreSqlContainerFixture : IAsyncLifetime
         }
         catch
         {
-            // Docker daemon not running or unavailable locally; fallback to InMemory database
             _container = null;
         }
     }

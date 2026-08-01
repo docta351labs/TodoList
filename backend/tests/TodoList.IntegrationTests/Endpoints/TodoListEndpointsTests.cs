@@ -7,7 +7,8 @@ using TodoList.IntegrationTests.Fixtures;
 
 namespace TodoList.IntegrationTests.Endpoints;
 
-public class TodoListEndpointsTests : IClassFixture<TodoListApiFactory>
+[Collection("IntegrationTests")]
+public class TodoListEndpointsTests
 {
     private readonly HttpClient _client;
 
