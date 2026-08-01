@@ -1,0 +1,59 @@
+## .NET
+# Build artifacts
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.DotSettings.user
+
+# EF Core migrations backup
+*.dbml
+
+# User secrets (DO NOT COMMIT)
+**/appsettings.Local.json
+**/appsettings.Development.*.json
+
+# Test results
+TestResults/
+coverage/
+
+# NuGet
+*.nupkg
+.nuget/
+
+## Node / Frontend
+node_modules/
+dist/
+.vite/
+.next/
+
+# Test artifacts
+frontend/coverage/
+frontend/playwright-report/
+frontend/test-results/
+
+## Environment & Secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+## OS / IDE
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+
+# JetBrains
+.idea/
+*.iml
+
+# VS Code (allow workspace settings, ignore user-local)
+.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+
+## Docker
+docker-compose.override.yml
