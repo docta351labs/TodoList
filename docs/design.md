@@ -313,13 +313,13 @@ E2E (Playwright -- smoke only)
 
 ### Backend
 
-- [ ] `dotnet new sln -n TodoList`
-- [ ] Create projects: `Api`, `Application`, `Domain`, `Infrastructure`, `UnitTests`, `IntegrationTests`
-- [ ] Add project references (Domain <- Application <- Infrastructure <- Api)
-- [ ] Install NuGet packages (see `docs/dependencies.md`)
-- [ ] Configure `appsettings.json` and `dotnet user-secrets`
-- [ ] Add initial EF Core migration
-- [ ] Configure Serilog + OpenTelemetry
+- [x] `dotnet new sln -n TodoList`
+- [x] Create projects: `Api`, `Application`, `Domain`, `Infrastructure`, `UnitTests`, `IntegrationTests`
+- [x] Add project references (Domain <- Application <- Infrastructure <- Api)
+- [x] Install NuGet packages (see `docs/dependencies.md`)
+- [x] Configure `appsettings.json` and `dotnet user-secrets`
+- [x] Add initial EF Core migration
+- [x] Configure Serilog + OpenTelemetry
 
 ### Frontend
 
