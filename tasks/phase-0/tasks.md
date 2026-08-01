@@ -2,10 +2,10 @@
 
 ## Tasks
 
-- [ ] **0.1** Initialize solution file: `dotnet new sln -n TodoList` at `backend/`
-- [ ] **0.2** Verify `.editorconfig` covers all project file types (`.cs`, `.ts`, `.json`, `.md`)
-- [ ] **0.3** Verify `.gitignore` excludes `bin/`, `obj/`, `node_modules/`, `*.user`, `.env`, `user-secrets`
-- [ ] **0.4** Update `docker-compose.yml` to add the **Seq** container for local structured log viewing *(already done — verify)*
+- [x] **0.1** Initialize solution file: `dotnet new sln -n TodoList` at `backend/`
+- [x] **0.2** Verify `.editorconfig` covers all project file types (`.cs`, `.ts`, `.json`, `.md`)
+- [x] **0.3** Verify `.gitignore` excludes `bin/`, `obj/`, `node_modules/`, `*.user`, `.env`, `user-secrets`
+- [x] **0.4** Update `docker-compose.yml` to add the **Seq** container for local structured log viewing *(already done — verify)*
 
 ## Notes
 
