@@ -10,7 +10,13 @@ namespace TodoList.IntegrationTests.Fixtures;
 public class TodoListApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly PostgreSqlContainerFixture _dbFixture = new();
-    private SqliteConnection? _sqliteConnection;
+    private readonly SqliteConnection _sqliteConnection;
+
+    public TodoListApiFactory()
+    {
+        _sqliteConnection = new SqliteConnection("DataSource=:memory:");
+        _sqliteConnection.Open();
+    }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -34,16 +40,12 @@ public class TodoListApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
             }
             else
             {
-                _sqliteConnection = new SqliteConnection("DataSource=:memory:");
-                _sqliteConnection.Open();
-
                 services.AddDbContext<AppDbContext>(options =>
                 {
                     options.UseSqlite(_sqliteConnection)
                            .UseSnakeCaseNamingConvention();
                 });
 
-                // Ensure schema is created for SQLite in-memory
                 var sp = services.BuildServiceProvider();
                 using var scope = sp.CreateScope();
                 var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -59,8 +61,8 @@ public class TodoListApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 
     public new async Task DisposeAsync()
     {
-        _sqliteConnection?.Close();
-        _sqliteConnection?.Dispose();
+        _sqliteConnection.Close();
+        _sqliteConnection.Dispose();
         await _dbFixture.DisposeAsync();
         await base.DisposeAsync();
     }
