@@ -43,7 +43,7 @@ builder.Services.AddOpenTelemetry()
 
 // Configure Health Checks
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? "Host=localhost;Port=5432;Database=todolist;Username=postgres;Password=changeme";
+    ?? "Host=localhost;Port=5433;Database=todolist;Username=postgres;Password=changeme";
 builder.Services.AddHealthChecks()
     .AddNpgSql(connectionString);
 
