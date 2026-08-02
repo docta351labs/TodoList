@@ -323,12 +323,12 @@ E2E (Playwright -- smoke only)
 
 ### Frontend
 
-- [ ] `npm create vite@latest frontend -- --template react-ts`
-- [ ] Install dependencies (TanStack Query, Zod, Zustand, React Router, Axios)
-- [ ] Configure `tsconfig.json` (strict mode)
-- [ ] Set up Vitest + RTL + MSW
-- [ ] Configure Playwright
-- [ ] Add ESLint + Prettier
+- [x] `npm create vite@latest frontend -- --template react-ts`
+- [x] Install dependencies (TanStack Query, Zod, Zustand, React Router, Axios)
+- [x] Configure `tsconfig.json` (strict mode)
+- [x] Set up Vitest + RTL + MSW
+- [x] Configure Playwright
+- [x] Add ESLint + Prettier
 
 ---
 
