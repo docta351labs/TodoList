@@ -7,6 +7,7 @@ A full-stack Todo List application built with **ASP.NET Core 9** (backend) and *
 - SOLID principles + Clean Architecture + CQRS
 - TDD with xUnit, FluentAssertions, and Testcontainers
 - React 19 + TanStack Query v5 + TypeScript 5 (strict)
+- Serilog + Seq structured logging & OpenTelemetry tracing
 
 ---
 
@@ -14,7 +15,7 @@ A full-stack Todo List application built with **ASP.NET Core 9** (backend) and *
 
 | Tool           | Minimum Version    |
 | ---------------| -------------------|
-| .NET SDK       | 9.0                |
+| .NET SDK       | 9.0 (or 8.0+)      |
 | Node.js        | 22 LTS             |
 | Docker Desktop | 27+                |
 | PostgreSQL     | 16 (or via Docker) |
@@ -39,7 +40,7 @@ dotnet user-secrets set "ConnectionStrings:DefaultConnection" \
 dotnet user-secrets set "Jwt:Secret" "your-256-bit-secret-here"
 ```
 
-### 3. Start PostgreSQL (Docker)
+### 3. Start PostgreSQL & Seq (Docker)
 
 ```bash
 docker run -d \
@@ -48,7 +49,15 @@ docker run -d \
   -e POSTGRES_PASSWORD=yourpassword \
   -p 5432:5432 \
   postgres:16-alpine
+
+docker run -d \
+  --name seq \
+  -e ACCEPT_EULA=Y \
+  -p 5341:80 \
+  datalust/seq:latest
 ```
+
+> **Note on Authentication (v1)**: JWT auth is currently mocked via `MockAuthMiddleware` for local development. Incoming requests default to a standard mock user identity (`00000000-0000-0000-0000-000000000001`).
 
 ### 4. Apply migrations
 
@@ -61,9 +70,10 @@ dotnet ef database update
 
 ```bash
 dotnet run
-# API available at: https://localhost:7001
-# Scalar UI:        https://localhost:7001/scalar
-# Health check:     https://localhost:7001/health
+# API available at: http://localhost:7001
+# Scalar UI:        http://localhost:7001/scalar
+# Seq Log Viewer:   http://localhost:5341
+# Health check:     http://localhost:7001/health
 ```
 
 ### 6. Run the frontend
@@ -98,14 +108,14 @@ dotnet test tests/TodoList.IntegrationTests
 dotnet test
 ```
 
-### Frontend — component tests
+### Frontend — component & hook tests
 
 ```bash
 cd frontend
 npm run test
 ```
 
-### Frontend — E2E (requires both servers running)
+### Frontend — E2E (requires both backend & frontend running)
 
 ```bash
 npm run test:e2e
@@ -128,7 +138,7 @@ TodoList/
 │       └── TodoList.IntegrationTests/
 ├── frontend/
 │   └── src/
-│       ├── api/         # Axios client
+│       ├── api/         # Axios client & React Query hooks
 │       ├── components/  # Shared UI components
 │       ├── features/    # Feature modules (todos/)
 │       ├── pages/       # Route pages
@@ -152,8 +162,8 @@ TodoList/
 | MediatR | CQRS pipeline |
 | FluentValidation | Input validation |
 | EF Core 9 (Npgsql) | ORM + PostgreSQL driver |
-| Scalar.AspNetCore | OpenAPI docs UI |
-| Serilog | Structured logging |
+| Scalar.AspNetCore | OpenAPI docs UI (`/scalar`) |
+| Serilog | Structured logging to Console and Seq (`http://localhost:5341`) |
 | OpenTelemetry | Distributed tracing |
 | NSubstitute | Test mocking |
 | Testcontainers | PostgreSQL for integration tests |

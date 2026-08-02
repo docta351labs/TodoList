@@ -25,7 +25,7 @@ export function AddTodoListForm({ onSubmit, onCancel, isLoading = false }: AddTo
     try {
       await onSubmit(result.data.title);
       setTitle('');
-    } catch (err) {
+    } catch {
       // Handled by mutation / parent component
     }
   };
@@ -54,7 +54,12 @@ export function AddTodoListForm({ onSubmit, onCancel, isLoading = false }: AddTo
 
       <div className={styles.actions}>
         {onCancel && (
-          <button type="button" className={styles.cancelButton} onClick={onCancel} disabled={isLoading}>
+          <button
+            type="button"
+            className={styles.cancelButton}
+            onClick={onCancel}
+            disabled={isLoading}
+          >
             Cancel
           </button>
         )}

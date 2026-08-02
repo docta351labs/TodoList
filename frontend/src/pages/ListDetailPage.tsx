@@ -10,7 +10,7 @@ import { TodoItemCard } from '@/features/todos/components/TodoItemCard/TodoItemC
 import { AddTodoItemForm } from '@/features/todos/components/AddTodoItemForm/AddTodoItemForm';
 import { LoadingSpinner } from '@/components/LoadingSpinner/LoadingSpinner';
 import { Toast } from '@/components/Toast/Toast';
-import type { Status, AddTodoItemRequest } from '@/types/api';
+import type { Status, AddTodoItemRequest, ProblemDetails } from '@/types/api';
 import styles from './ListDetailPage.module.css';
 
 type FilterType = 'All' | 'Pending' | 'InProgress' | 'Done';
@@ -31,10 +31,11 @@ export function ListDetailPage() {
   const handleAddItem = async (dto: AddTodoItemRequest) => {
     try {
       await addItemMutation.mutateAsync(dto);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const problem = err as ProblemDetails;
       setToastError({
-        message: err?.title || 'Failed to add todo item.',
-        traceId: err?.traceId,
+        message: problem?.title || 'Failed to add todo item.',
+        traceId: problem?.traceId,
       });
     }
   };
@@ -42,10 +43,11 @@ export function ListDetailPage() {
   const handleStatusChange = async (itemId: string, newStatus: Status) => {
     try {
       await updateStatusMutation.mutateAsync({ itemId, dto: { newStatus } });
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const problem = err as ProblemDetails;
       setToastError({
-        message: err?.title || 'Failed to update item status.',
-        traceId: err?.traceId,
+        message: problem?.title || 'Failed to update item status.',
+        traceId: problem?.traceId,
       });
     }
   };
@@ -53,10 +55,11 @@ export function ListDetailPage() {
   const handleDeleteItem = async (itemId: string) => {
     try {
       await deleteItemMutation.mutateAsync(itemId);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const problem = err as ProblemDetails;
       setToastError({
-        message: err?.title || 'Failed to delete todo item.',
-        traceId: err?.traceId,
+        message: problem?.title || 'Failed to delete todo item.',
+        traceId: problem?.traceId,
       });
     }
   };
@@ -93,7 +96,14 @@ export function ListDetailPage() {
     <div className={styles.container}>
       <nav className={styles.navigation}>
         <button className={styles.backButton} onClick={() => navigate('/')}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <line x1="19" y1="12" x2="5" y2="12" />
             <polyline points="12 19 5 12 12 5" />
           </svg>

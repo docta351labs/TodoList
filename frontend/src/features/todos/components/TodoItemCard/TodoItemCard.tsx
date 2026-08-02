@@ -54,8 +54,12 @@ export function TodoItemCard({
           {item.description && <p className={styles.description}>{item.description}</p>}
 
           <div className={styles.badgesRow}>
-            <span className={`${styles.priorityBadge} ${priorityClass}`}>{priorityLabel} Priority</span>
-            {formattedDueDate && !isDone && <span className={styles.metaText}>Due {formattedDueDate}</span>}
+            <span className={`${styles.priorityBadge} ${priorityClass}`}>
+              {priorityLabel} Priority
+            </span>
+            {formattedDueDate && !isDone && (
+              <span className={styles.metaText}>Due {formattedDueDate}</span>
+            )}
             {formattedCompletedDate && isDone && (
               <span className={styles.metaText}>Completed {formattedCompletedDate}</span>
             )}

@@ -5,6 +5,7 @@ import { AddTodoListForm } from '@/features/todos/components/AddTodoListForm/Add
 import { LoadingSpinner } from '@/components/LoadingSpinner/LoadingSpinner';
 import { Toast } from '@/components/Toast/Toast';
 import { useUiStore } from '@/store/uiStore';
+import type { ProblemDetails } from '@/types/api';
 import styles from './DashboardPage.module.css';
 
 export function DashboardPage() {
@@ -19,10 +20,11 @@ export function DashboardPage() {
     try {
       await createMutation.mutateAsync({ title });
       closeCreateListModal();
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const problem = err as ProblemDetails;
       setToastError({
-        message: err?.title || 'Failed to create todo list.',
-        traceId: err?.traceId,
+        message: problem?.title || 'Failed to create todo list.',
+        traceId: problem?.traceId,
       });
     }
   };
@@ -30,10 +32,11 @@ export function DashboardPage() {
   const handleDeleteList = async (id: string) => {
     try {
       await deleteMutation.mutateAsync(id);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const problem = err as ProblemDetails;
       setToastError({
-        message: err?.title || 'Failed to delete todo list.',
-        traceId: err?.traceId,
+        message: problem?.title || 'Failed to delete todo list.',
+        traceId: problem?.traceId,
       });
     }
   };
@@ -46,7 +49,14 @@ export function DashboardPage() {
           <p className={styles.subtitle}>Manage your todo lists and stay organized</p>
         </div>
         <button className={styles.createButton} onClick={openCreateListModal}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+          >
             <path d="M12 5v14M5 12h14" />
           </svg>
           New List
@@ -58,7 +68,9 @@ export function DashboardPage() {
       {isError && (
         <div className={styles.emptyState}>
           <h2 className={styles.emptyTitle}>Error loading lists</h2>
-          <p className={styles.emptyText}>{error?.title || 'Could not connect to the backend server.'}</p>
+          <p className={styles.emptyText}>
+            {error?.title || 'Could not connect to the backend server.'}
+          </p>
         </div>
       )}
 
@@ -74,7 +86,9 @@ export function DashboardPage() {
             <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2" />
           </svg>
           <h2 className={styles.emptyTitle}>No todo lists found</h2>
-          <p className={styles.emptyText}>Get started by creating your first todo list to organize your tasks.</p>
+          <p className={styles.emptyText}>
+            Get started by creating your first todo list to organize your tasks.
+          </p>
           <button className={styles.createButton} onClick={openCreateListModal}>
             Create First List
           </button>

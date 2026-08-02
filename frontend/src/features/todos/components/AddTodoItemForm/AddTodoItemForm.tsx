@@ -45,7 +45,7 @@ export function AddTodoItemForm({ onSubmit, isLoading = false }: AddTodoItemForm
       setDescription('');
       setPriority('Medium');
       setDueDate('');
-    } catch (err) {
+    } catch {
       // Handled upstream
     }
   };

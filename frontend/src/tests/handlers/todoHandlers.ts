@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw';
-import type { TodoListSummaryDto, TodoListDto, TodoItemDto } from '@/types/api';
+import type { TodoListSummaryDto, TodoListDto, TodoItemDto, Priority, Status } from '@/types/api';
 
 export const mockListsSummary: TodoListSummaryDto[] = [
   {
@@ -86,7 +86,7 @@ export const todoHandlers = [
     const body = (await request.json()) as {
       title: string;
       description?: string | null;
-      priority: any;
+      priority: Priority;
       dueDate?: string | null;
     };
     const createdItem: TodoItemDto = {
@@ -107,7 +107,7 @@ export const todoHandlers = [
     const body = (await request.json()) as {
       title: string;
       description?: string | null;
-      priority: any;
+      priority: Priority;
       dueDate?: string | null;
     };
     const updatedItem: TodoItemDto = {
@@ -125,7 +125,7 @@ export const todoHandlers = [
 
   // PATCH /todolists/:listId/items/:itemId/status
   http.patch('*/api/v1/todolists/:listId/items/:itemId/status', async ({ request, params }) => {
-    const body = (await request.json()) as { newStatus: any };
+    const body = (await request.json()) as { newStatus: Status };
     const updatedItem: TodoItemDto = {
       id: String(params.itemId),
       title: 'Updated Item',

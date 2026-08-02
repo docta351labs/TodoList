@@ -38,7 +38,11 @@ export const todoApi = {
     return TodoItemSchema.parse(response.data);
   },
 
-  async updateItem(listId: string, itemId: string, dto: UpdateTodoItemRequest): Promise<TodoItemDto> {
+  async updateItem(
+    listId: string,
+    itemId: string,
+    dto: UpdateTodoItemRequest,
+  ): Promise<TodoItemDto> {
     const response = await apiClient.put(`/todolists/${listId}/items/${itemId}`, dto);
     return TodoItemSchema.parse(response.data);
   },

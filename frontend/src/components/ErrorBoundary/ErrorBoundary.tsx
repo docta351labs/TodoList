@@ -51,7 +51,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
           </svg>
           <h2 className={styles.heading}>Something went wrong</h2>
           <p className={styles.details}>
-            {this.state.error?.message || 'An unexpected application error occurred while rendering.'}
+            {this.state.error?.message ||
+              'An unexpected application error occurred while rendering.'}
           </p>
           <button className={styles.retryButton} onClick={this.handleRetry}>
             Try Again

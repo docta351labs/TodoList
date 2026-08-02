@@ -37,7 +37,12 @@ export function useTodoList(listId: string) {
 export function useCreateTodoList() {
   const queryClient = useQueryClient();
 
-  return useMutation<TodoListDto, ProblemDetails, CreateTodoListRequest, { previousLists?: TodoListSummaryDto[] }>({
+  return useMutation<
+    TodoListDto,
+    ProblemDetails,
+    CreateTodoListRequest,
+    { previousLists?: TodoListSummaryDto[] }
+  >({
     mutationFn: (dto) => todoApi.create(dto),
     onMutate: async (newList) => {
       await queryClient.cancelQueries({ queryKey: todoKeys.all });
@@ -53,7 +58,10 @@ export function useCreateTodoList() {
       };
 
       if (previousLists) {
-        queryClient.setQueryData<TodoListSummaryDto[]>(todoKeys.all, [optimisticList, ...previousLists]);
+        queryClient.setQueryData<TodoListSummaryDto[]>(todoKeys.all, [
+          optimisticList,
+          ...previousLists,
+        ]);
       }
 
       return { previousLists };
@@ -104,7 +112,12 @@ export function useDeleteTodoList() {
 export function useAddTodoItem(listId: string) {
   const queryClient = useQueryClient();
 
-  return useMutation<TodoItemDto, ProblemDetails, AddTodoItemRequest, { previousList?: TodoListDto }>({
+  return useMutation<
+    TodoItemDto,
+    ProblemDetails,
+    AddTodoItemRequest,
+    { previousList?: TodoListDto }
+  >({
     mutationFn: (dto) => todoApi.addItem(listId, dto),
     onMutate: async (newItem) => {
       await queryClient.cancelQueries({ queryKey: todoKeys.detail(listId) });
@@ -213,7 +226,8 @@ export function useUpdateTodoItemStatus(listId: string) {
               ? {
                   ...item,
                   status: dto.newStatus,
-                  completedAt: dto.newStatus === 'Done' ? new Date().toISOString() : item.completedAt,
+                  completedAt:
+                    dto.newStatus === 'Done' ? new Date().toISOString() : item.completedAt,
                 }
               : item,
           ),
