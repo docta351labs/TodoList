@@ -6,16 +6,10 @@ using TodoList.Domain.Exceptions;
 
 namespace TodoList.Api.Middleware;
 
-public class ExceptionHandlingMiddleware
+public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
 {
-    private readonly RequestDelegate _next;
-    private readonly ILogger<ExceptionHandlingMiddleware> _logger;
-
-    public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
-    {
-        _next = next;
-        _logger = logger;
-    }
+    private readonly RequestDelegate _next = next;
+    private readonly ILogger<ExceptionHandlingMiddleware> _logger = logger;
 
     public async Task InvokeAsync(HttpContext context)
     {
@@ -25,7 +19,6 @@ public class ExceptionHandlingMiddleware
         }
         catch (Exception ex)
         {
-            try { File.AppendAllText("test_error.log", ex.ToString() + "\n\n-------------------\n\n"); } catch { }
             _logger.LogError(ex, "An unhandled exception occurred: {Message}", ex.Message);
             await HandleExceptionAsync(context, ex);
         }
@@ -35,7 +28,7 @@ public class ExceptionHandlingMiddleware
     {
         context.Response.ContentType = "application/problem+json";
 
-        var traceId = Activity.Current?.Id ?? context.TraceIdentifier;
+        string traceId = Activity.Current?.Id ?? context.TraceIdentifier;
 
         ProblemDetails problemDetails = exception switch
         {
