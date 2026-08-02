@@ -22,6 +22,7 @@ builder.Host.UseSerilog();
 
 // Configure Services
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
@@ -71,11 +72,16 @@ app.UseMiddleware<MockAuthMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseSwagger(c =>
+    {
+        c.RouteTemplate = "openapi/{documentName}.json";
+    });
+
     app.MapScalarApiReference(options =>
     {
         options.WithTitle("TodoList API - Scalar")
                .WithTheme(ScalarTheme.Purple)
-               .WithDefaultHttpClient(ScalarTarget.JavaScript, ScalarClient.Fetch);
+               .WithOpenApiRoutePattern("/openapi/{documentName}.json");
     });
 }
 
