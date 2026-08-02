@@ -1,25 +1,33 @@
 .form {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
+  width: 100%;
 }
 
 .field {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xs);
+  width: 100%;
 }
 
 .label {
   font-size: 0.875rem;
   font-weight: 600;
   color: var(--color-text);
+  text-align: left;
 }
 
 .input {
+  box-sizing: border-box;
   width: 100%;
+  max-width: 100%;
   padding: 0.625rem 0.875rem;
   font-size: 0.9375rem;
+  line-height: 1.25rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background-color: var(--color-surface);
@@ -42,6 +50,7 @@
 .errorText {
   font-size: 0.75rem;
   color: #dc2626;
+  text-align: left;
 }
 
 .actions {
@@ -60,6 +69,11 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.cancelButton:hover {
+  background-color: #f1f5f9;
 }
 
 .submitButton {

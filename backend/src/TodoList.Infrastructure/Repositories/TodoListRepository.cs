@@ -14,7 +14,6 @@ public class TodoListRepository(AppDbContext dbContext) : ITodoListRepository
     public async Task<TodoListAggregate?> GetByIdAsync(Guid id, CancellationToken ct = default)
     {
         return await _dbContext.TodoLists
-            .AsNoTracking()
             .Include(l => l.Items)
             .FirstOrDefaultAsync(l => l.Id == id, ct);
     }
