@@ -42,7 +42,7 @@ export type Status = z.infer<typeof StatusSchema>;
 
 // TodoItem Schema
 export const TodoItemSchema = z.object({
-  id: z.string().uuid(),
+  id: z.string(),
   title: z.string(),
   description: z.string().nullable().optional(),
   priority: PrioritySchema,
@@ -56,9 +56,9 @@ export type TodoItemDto = z.infer<typeof TodoItemSchema>;
 
 // TodoList Schema
 export const TodoListSchema = z.object({
-  id: z.string().uuid(),
+  id: z.string(),
   title: z.string(),
-  ownerId: z.string().uuid(),
+  ownerId: z.string(),
   createdAt: z.string(),
   items: z.array(TodoItemSchema),
 });
@@ -67,9 +67,9 @@ export type TodoListDto = z.infer<typeof TodoListSchema>;
 
 // TodoListSummary Schema
 export const TodoListSummarySchema = z.object({
-  id: z.string().uuid(),
+  id: z.string(),
   title: z.string(),
-  ownerId: z.string().uuid(),
+  ownerId: z.string(),
   createdAt: z.string(),
   itemCount: z.number(),
 });

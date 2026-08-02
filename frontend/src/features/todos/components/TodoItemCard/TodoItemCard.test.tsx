@@ -14,16 +14,28 @@ const mockPendingItem: TodoItemDto = {
   completedAt: null,
 };
 
-describe('TodoItemCard Component', () => {
-  it('renders item title, description, priority, and status control', () => {
-    const handleStatusChange = vi.fn();
-    const handleDelete = vi.fn();
+const mockInProgressItem: TodoItemDto = {
+  ...mockPendingItem,
+  id: '4fa85f64-5717-4562-b3fc-2c963f66afa7',
+  title: 'Write report',
+  status: 'InProgress',
+};
 
+const mockDoneItem: TodoItemDto = {
+  ...mockPendingItem,
+  id: '5fa85f64-5717-4562-b3fc-2c963f66afa8',
+  title: 'Clean room',
+  status: 'Done',
+  completedAt: '2026-08-01T15:00:00Z',
+};
+
+describe('TodoItemCard Component', () => {
+  it('renders title, priority badge, and status badge', () => {
     render(
       <TodoItemCard
         item={mockPendingItem}
-        onStatusChange={handleStatusChange}
-        onDelete={handleDelete}
+        onStatusChange={vi.fn()}
+        onDelete={vi.fn()}
       />,
     );
 
@@ -33,39 +45,59 @@ describe('TodoItemCard Component', () => {
     expect(screen.getByRole('button', { name: /start task/i })).toBeInTheDocument();
   });
 
-  it('triggers onStatusChange callback when Start action button is clicked', () => {
+  it('calls onStatusChange with InProgress when Start button clicked', () => {
     const handleStatusChange = vi.fn();
-    const handleDelete = vi.fn();
-
     render(
       <TodoItemCard
         item={mockPendingItem}
         onStatusChange={handleStatusChange}
-        onDelete={handleDelete}
+        onDelete={vi.fn()}
       />,
     );
 
-    const startBtn = screen.getByRole('button', { name: /start task/i });
-    fireEvent.click(startBtn);
-
+    fireEvent.click(screen.getByRole('button', { name: /start task/i }));
     expect(handleStatusChange).toHaveBeenCalledWith(mockPendingItem.id, 'InProgress');
   });
 
-  it('triggers onDelete callback when Delete button is clicked', () => {
+  it('calls onStatusChange with Done when Complete button clicked', () => {
     const handleStatusChange = vi.fn();
-    const handleDelete = vi.fn();
+    render(
+      <TodoItemCard
+        item={mockInProgressItem}
+        onStatusChange={handleStatusChange}
+        onDelete={vi.fn()}
+      />,
+    );
 
+    fireEvent.click(screen.getByRole('button', { name: /complete task/i }));
+    expect(handleStatusChange).toHaveBeenCalledWith(mockInProgressItem.id, 'Done');
+  });
+
+  it('calls onDelete when delete button clicked', () => {
+    const handleDelete = vi.fn();
     render(
       <TodoItemCard
         item={mockPendingItem}
-        onStatusChange={handleStatusChange}
+        onStatusChange={vi.fn()}
         onDelete={handleDelete}
       />,
     );
 
-    const deleteBtn = screen.getByRole('button', { name: /delete buy groceries/i });
-    fireEvent.click(deleteBtn);
-
+    fireEvent.click(screen.getByRole('button', { name: /delete buy groceries/i }));
     expect(handleDelete).toHaveBeenCalledWith(mockPendingItem.id);
+  });
+
+  it('does not render action buttons when status is Done', () => {
+    render(
+      <TodoItemCard
+        item={mockDoneItem}
+        onStatusChange={vi.fn()}
+        onDelete={vi.fn()}
+      />,
+    );
+
+    expect(screen.queryByRole('button', { name: /start task/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /complete task/i })).not.toBeInTheDocument();
+    expect(screen.getByText('Completed')).toBeInTheDocument();
   });
 });
