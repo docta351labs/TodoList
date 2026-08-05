@@ -63,4 +63,36 @@ public class TodoItemTests
         // Assert
         act.Should().Throw<InvalidStatusTransitionException>();
     }
+
+    [Fact]
+    public void Update_WithValidData_ShouldUpdateProperties()
+    {
+        // Arrange
+        var item = TodoItem.Create("Write Docs", "Draft", Priority.Low, null);
+        var newDueDate = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(7));
+
+        // Act
+        item.Update("Write Docs v2", "Final draft", Priority.High, newDueDate);
+
+        // Assert
+        item.Title.Should().Be("Write Docs v2");
+        item.Description.Should().Be("Final draft");
+        item.Priority.Should().Be(Priority.High);
+        item.DueDate.Should().Be(newDueDate);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void Update_WithEmptyTitle_ShouldThrowDomainException(string title)
+    {
+        // Arrange
+        var item = TodoItem.Create("Write Docs", null, Priority.Medium, null);
+
+        // Act
+        Action act = () => item.Update(title, null, Priority.Medium, null);
+
+        // Assert
+        act.Should().Throw<DomainException>();
+    }
 }
